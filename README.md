@@ -21,3 +21,8 @@ Create a shell using the C programming language.
 | shell_no_interactive.c | Run shell non-interactive mode. |
 | split_line.c | Split a string into tokens. |
 | execute_args.c | Number of builtin functions. |
+
+## Install
+
+Compile like this:
+> gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o [name]
