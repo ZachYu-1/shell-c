@@ -1,10 +1,5 @@
 #include "shell.h"
 
-/**
- * main - function that checks if our shell is called
- *
- * Return: 0 on success
- */
 int main(void)
 {
 	/* determines if file descriptor is associated with a terminal */
