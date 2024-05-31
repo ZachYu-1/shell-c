@@ -1,23 +1,23 @@
 # shell-c
 
 ## Description
-
-Create a shell using the C programming language.
+Built a shell on a Linux environment using the C language.
 
 ## Files
 
 | Name | Description |
 | ------------------------------ | -------------------------------------------- |
-| shell.h | Header file program. |
-| main.c | Main function, interactive and non-interactive. |
-| new_procees.c | Function that creates a new process. |
-| own_cd.c | Change the working directory. |
-| own_env.c | Function that prints environment variables. |
-| own_exit.c | Exit shell with a given state. |
-| own_help.c | Function that prints help (get information about a command) |
-| read_line.c | Read a line from stdin. |
-| read_stream.c | Read a line from the stream. |
-| shell_interactive.c | Run shell interactive mode. |
-| shell_no_interactive.c | Run shell non-interactive mode. |
-| split_line.c | Split a string into tokens. |
-| execute_args.c | Number of builtin functions. |
+| shell.h | Header file, macros and prototypes |
+| main.c | Main function, run the shell in a loop |
+| read_line.c | Read a command from user input |
+| split_line.c | Split a string of command into tokens |
+| execute_args.c | Go through command and execute |
+| new_procees.c | Create a child process to execute command |
+| builtin_cd.c | Builtin function, change the working directory |
+| builtin_exit.c | Builtin function, exit with a given state |
+
+## Compile
+gcc -std=c11 *.c -o [name]
+
+## Run
+Type command after prompt symbol $ and press enter

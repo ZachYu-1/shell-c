@@ -1,37 +1,32 @@
 #ifndef SHELL_H
 #define SHELL_H
 
-/*---LIBRARIES---*/
+// MACROS
+#define TOK_DELIM " \t\r\n\a\""
+#define _POSIX_C_SOURCE 200809L
+
+// LIBRARIES
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <signal.h>
 #include <sys/wait.h>
 
-/*---Macros---*/
-#define TOK_DELIM " \t\r\n\a\""
-extern char **environ;
+// PROTOTYPES
+typedef struct
+{
+    char **args;
+    int argc;
+} parsed_args;
 
-/*---PROTOTYPES---*/
-/* main.c */
-void shell_interactive(void);
-void shell_no_interactive(void);
-
-/* shell_interactive.c */
 char *read_line(void);
-char **split_line(char *line);
-int execute_args(char **args);
-
-/* execute_args */
-int new_process(char **args);
-
-/* shell_no_interactive */
-char *read_stream(void);
-
-/*---Builtin func---*/
-int own_cd(char **args);
-int own_exit(char **args);
-int own_env(char **args);
-int own_help(char **args);
+parsed_args *split_line(char *line);
+int execute_args(parsed_args *arg);
+int new_process(char **args, int input_fd, int output_fd, int is_background, int print_pid);
+int builtin_cd(char **args);
+int builtin_exit(char **args);
 
 #endif

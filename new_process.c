@@ -1,37 +1,62 @@
 #include "shell.h"
 
-/**
- * new_process - create a new process
- * @args: array of strings that contains the command and its flags
- *
- * Return: 1 if success, 0 otherwise.
- */
-int new_process(char **args)
+int new_process(char **args, int input_fd, int output_fd, int is_background, int print_pid)
 {
     pid_t pid;
     int status;
 
     pid = fork();
-    if (pid ==  0)
+    if (pid == 0) // child process
     {
-        /* child process */
-        if (execvp(args[0], args) == -1)
+        if (input_fd != STDIN_FILENO) // redirect stdin to input_fd
         {
-            perror("error in new_process: child process");
+            dup2(input_fd, STDIN_FILENO);
+            close(input_fd);
         }
+        if (output_fd != STDOUT_FILENO) // redirect stdout to output_fd
+        {
+            dup2(output_fd, STDOUT_FILENO);
+            close(output_fd);
+        }
+
+        if (is_background) // backgroud child does not receive keyboard interrupts
+        {
+            setpgid(0, 0);
+        }
+
+        if (execvp(args[0], args) == -1) // error executing
+        {
+            if (errno == ENOENT)
+                fprintf(stderr, "%s: Command not found\n", args[0]);
+
+            else
+                perror("Error executing command");
+        }
+
         exit(EXIT_FAILURE);
     }
+
     else if (pid < 0)
     {
-        /* error forking */
         perror("error in new_process: forking");
     }
-    else
+
+    else // parent process
     {
-        /* parent process */
-        do {
-            waitpid(pid, &status, WUNTRACED);
-        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+        if (input_fd != STDIN_FILENO) // close redirected input and output in parent
+            close(input_fd);
+        if (output_fd != STDOUT_FILENO)
+            close(output_fd);
+
+        if (!is_background) // not background process, wait for exit or interrupted
+        {
+            do
+            {
+                waitpid(pid, &status, WUNTRACED);
+            } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+        }
+        else if (print_pid) // print the pid of background process
+            printf("[%d]\n", pid);
     }
     return (-1);
 }
